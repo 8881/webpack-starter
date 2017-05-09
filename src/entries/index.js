@@ -3,5 +3,5 @@
 import '../js';
 
 if (module.hot) {
-    module.hot.accept('../Farm', () => location.reload());
+    module.hot.accept('../js', () => location.reload());
 }

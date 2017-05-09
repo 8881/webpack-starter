@@ -59,13 +59,11 @@ const imageRule = {
 };
 
 const webpackConfig = {
-    entry: {
-        [COMMON_CHUNK_NAME]: ['babel-polyfill',],
-    },
+    entry: {},
     output: {
         path: path.resolve(__dirname, config.DIST_PATH),
         filename: 'js/[name].js',
-        publicPath: '../',
+        publicPath: '',
     },
     module: {
         rules: [
@@ -84,8 +82,6 @@ const webpackConfig = {
             filename: 'js/[name].js',
             minChunks: 2, // Infinity
         }),
-        new Visualizer(),
-        new webpack.NamedModulesPlugin(),
     ],
 };
 
@@ -94,13 +90,11 @@ const entryNameList = entryFileNameList.map(function (entryFileName) {
     return path.basename(entryFileName, '.js');
 });
 
-// get corresponding html template
 const htmlFileNameList = glob.sync(path.join(SOURCE_PATH, TEMPLATE_FOLDER_NAME) + '/*.html');
 const htmlNameList = htmlFileNameList.map(function (htmlFileName) {
     return path.basename(htmlFileName, '.html');
 });
 
-// set entry
 entryNameList.forEach(function (entryName) {
     webpackConfig.entry[entryName] = [path.join(__dirname, './' + SOURCE_PATH + '/' + ENTRY_FOLDER_NAME + '/' + entryName + '.js')];
 
@@ -130,8 +124,10 @@ switch (NODE_ENV) {
         webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
         webpackConfig.plugins.push(new webpack.NoEmitOnErrorsPlugin());
         webpackConfig.plugins.push(new webpack.ProgressPlugin((percentage, msg) => {
-            logUpdate('     progress:', numeral(percentage).format('00.00%'), msg);
+            logUpdate('[progress]: ', numeral(percentage).format('00.00%'), msg);
         }));
+
+        webpackConfig.plugins.push(new Visualizer());
 
         break;
 
@@ -142,6 +138,7 @@ switch (NODE_ENV) {
         webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
             sourceMap: true
         }));
+
         break;
 }
 

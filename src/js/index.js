@@ -4,4 +4,4 @@ import '../css/index.pcss';
 
 document.title = 'Hello World';
 
-console.log(123);
+console.log(12345677);
